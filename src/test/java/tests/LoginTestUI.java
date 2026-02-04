@@ -35,6 +35,7 @@ public class LoginTestUI {
         driver.findElement(loginButton).click();
         WebElement homeIndicator = wait.until(ExpectedConditions.visibilityOfElementLocated(homeIndicatorLocator));
         Assert.assertTrue(homeIndicator.isDisplayed());
+
     }
 
     @Test(description = "negative test")
