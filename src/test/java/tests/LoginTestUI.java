@@ -33,7 +33,8 @@ public class LoginTestUI {
         driver.findElement(emailField).sendKeys("admin@example.com");
         driver.findElement(psw).sendKeys("admin123");
         driver.findElement(loginButton).click();
-        Assert.assertTrue(driver.findElement(homeIndicatorLocator).isDisplayed());
+        WebElement homeIndicator = wait.until(ExpectedConditions.visibilityOfElementLocated(homeIndicatorLocator));
+        Assert.assertTrue(homeIndicator.isDisplayed());
     }
 
     @Test(description = "negative test")
