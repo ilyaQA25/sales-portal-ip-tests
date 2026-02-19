@@ -31,14 +31,12 @@ public class LoginPage extends BasePage {
             return waitForVisibility(homeIndicatorLocator).isDisplayed();
         } catch (Exception e) {
             return false;
-
         }
     }
 
     public String getErrorText(){
        return waitForVisibility(errorMessage).getText();
     }
-
 }
 
 
