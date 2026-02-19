@@ -10,30 +10,18 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
+import utils.UiConfig;
 
 import java.time.Duration;
 
 public class BaseUiTest {
     protected WebDriver driver;
-    protected WebDriverWait wait;
+
 
     @BeforeMethod
     public void open(){
         driver = new ChromeDriver();
-        driver.get("http://localhost:8585/#/login");
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-    }
-
-    protected void clickElement(By locator){
-        wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
-    }
-
-    protected void typeIntoElement(By locator, String text){
-        wait.until(ExpectedConditions.elementToBeClickable(locator)).sendKeys(text);
-    }
-
-    protected WebElement waitForVisibility(By locator) {
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+        driver.get(UiConfig.BASE_URL);
     }
 
     @AfterMethod

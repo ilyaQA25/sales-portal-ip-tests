@@ -8,36 +8,42 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+import pages.LoginPage;
+import utils.UiConfig;
 
 import java.time.Duration;
 
 public class LoginTestUI extends BaseUiTest {
-    private final By emailField = By.id("emailinput");
-    private final By psw = By.id("passwordinput");
-    private final By loginButton = By.cssSelector(".btn.btn-primary");
-    private final By homeIndicatorLocator = By.xpath("//h1[text()='Welcome to Sales Management Portal']");
-    private final By errorMessage = By.xpath("//div[@class='toast-body']");
+    private LoginPage loginPage;
 
-
-    @Test(description = "smoke test")
-    public void successLogin(){
-        typeIntoElement(emailField, "admin@example.com");
-        typeIntoElement(psw,"admin123");
-        clickElement(loginButton);
-        WebElement homePageIndicator = waitForVisibility(homeIndicatorLocator);
-        Assert.assertTrue(homePageIndicator.isDisplayed());
+    @BeforeMethod
+    public void initPageObject() {
+        // driver is already created in BaseUiTest.open() because the parent's @BeforeMethod runs earlier
+        loginPage = new LoginPage(driver);
     }
 
-    @Test(description = "negative test")
-    public void wrongEmail(){
-        typeIntoElement(emailField, "wersdfsdf");
-        typeIntoElement(psw,"admin123");
-        clickElement(loginButton);
-        WebElement errorIndicator = waitForVisibility(errorMessage);
-        Assert.assertTrue(errorIndicator.isDisplayed());
+
+    @Test(description = "smoke test", priority = 1)
+    public void successLogin() {
+        loginPage.login(UiConfig.VALID_EMAIL, UiConfig.VALID_PASSWORD);
+        Assert.assertTrue(loginPage.isDashboardDisplayed());
     }
 
+    @DataProvider(name = "negativeLoginData")
+    public Object[][] getNegativeData() {
+        return new Object[][]{
+                // { email, password, expectedError }
+                {"wrong@email.com", UiConfig.VALID_PASSWORD, "Incorrect credentials"}, // Wrong email
+                {UiConfig.VALID_EMAIL, "wrongPass", "Incorrect credentials"},      // wrong psw
+                {"", "", "Incorrect credentials"}                                   // empty fields
+        };
+    }
+
+    @Test(dataProvider = "negativeLoginData", priority = 2)
+    public void negativeTests(String email, String password, String errorMessage) {
+        loginPage.login(email, password);
+        String actualError = loginPage.getErrorText();
+        Assert.assertTrue(actualError.contains(errorMessage));
+    }
 }
