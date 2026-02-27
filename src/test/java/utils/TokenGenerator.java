@@ -9,14 +9,11 @@ import tests.apiTest.LoginRequestDto;
 import tests.apiTest.LoginResponseDto;
 
 import static io.restassured.RestAssured.given;
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class TokenGenerator {
-    private String token;
-    private String userData;
 
-    public static AuthData getAuthData() { // <--- Меняем возвращаемый тип метода
+public class TokenGenerator {
+
+
+    public static String getAccessToken() {
         LoginRequestDto requestBody = new LoginRequestDto(ApiConfig.ADMIN_EMAIL, ApiConfig.ADMIN_PASSWORD);
 
         Response apiResponse = given()
@@ -30,17 +27,16 @@ public class TokenGenerator {
                 .extract()
                 .response();
 
-        String token = apiResponse.getHeader("Authorization");
-        String userName = apiResponse.getHeader("X-User-Name");
+        String authorizationHeader = apiResponse.getHeader("Authorization");
 
-        if (token == null) {
+        if (authorizationHeader != null) {
+            if (authorizationHeader.startsWith("Bearer ")) {
+                return authorizationHeader.substring(7);
+            }
+            return authorizationHeader;
+        } else {
             throw new RuntimeException("Authorization header not found in API login response.");
         }
-        if (!token.startsWith("Bearer ")) {
-            token = "Bearer " + token; // Убеждаемся, что токен с префиксом
-        }
-
-        return new AuthData(token, userName); // <--- Возвращаем новый объект AuthData
     }
     }
 

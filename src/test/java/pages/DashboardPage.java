@@ -14,6 +14,7 @@ public class DashboardPage extends BasePage {
     private final By viewOrdersButton = By.id("orders-from-home");
     private final By viewProductsButton = By.id("products-from-home");
     private final By viewCustomersButton = By.id("customers-from-home");
+    private final By homeHeader = By.xpath("//h1[text()='Welcome to Sales Management Portal']");
 
     public boolean isOpened(){
         try {
@@ -26,7 +27,9 @@ public class DashboardPage extends BasePage {
         return driver.getCurrentUrl().endsWith("/#/home");
     }
 
-    public void viewOrders(){
-        clickElement(viewOrdersButton);
+    public String getPageTitleText() {
+        return getText(homeHeader);
     }
+
+    
 }
