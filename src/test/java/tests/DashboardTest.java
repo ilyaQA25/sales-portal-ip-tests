@@ -20,8 +20,8 @@ public class DashboardTest extends BaseUiTest {
 
     @Test(description = "smoke test", priority = 1)
     public void openDashboardDirectly() {
-        openPageWithAuth("http://localhost:8585/#/home");
-        Assert.assertEquals(dashboardPage.getPageTitleText(),"Welcome to Sales Management Portal");
+        openPageWithAuth(UiConfig.HOME_URL);
+        Assert.assertEquals(dashboardPage.getHomeHeader(),UiConfig.EXPECTED_DASHBOARD_TITLE);
     }
 
     @DataProvider(name = "invalidTokens")
@@ -34,10 +34,10 @@ public class DashboardTest extends BaseUiTest {
 
     @Test(description = "Negative Test: Access denied with various invalid tokens", dataProvider = "invalidTokens", priority = 2)
     public void accessDeniedWithVariousInvalidTokens(String tokenValue, String description) {
-        goToPageWithToken("http://localhost:8585/#/home", tokenValue);
+        openPageWithAuth(UiConfig.HOME_URL, tokenValue);
 
         DashboardPage dashboardPage = new DashboardPage(driver);
-        Assert.assertFalse(dashboardPage.isOpened(), "Dashboard page should NOT be opened with invalid token: " + description);
+        Assert.assertFalse(dashboardPage.isDashboardPageDisplayed(), "Dashboard page should NOT be opened with invalid token: " + description);
         Assert.assertTrue(driver.getCurrentUrl().contains("/#/login"), "Should be redirected to login page for: " + description);
     }
 }
