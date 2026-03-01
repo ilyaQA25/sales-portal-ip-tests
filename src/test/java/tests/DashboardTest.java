@@ -1,0 +1,43 @@
+package tests;
+
+import base.BaseUiTest.BaseUiTest;
+import org.openqa.selenium.Cookie;
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+import pages.DashboardPage;
+import pages.LoginPage;
+import utils.UiConfig;
+
+public class DashboardTest extends BaseUiTest {
+    private DashboardPage dashboardPage;
+
+    @BeforeMethod
+    public void initPageObject() {
+        dashboardPage = new DashboardPage(driver);
+    }
+
+    @Test(description = "smoke test", priority = 1)
+    public void openDashboardDirectly() {
+        openPageWithAuth("http://localhost:8585/#/home");
+        Assert.assertEquals(dashboardPage.getPageTitleText(),"Welcome to Sales Management Portal");
+    }
+
+    @DataProvider(name = "invalidTokens")
+    public Object[][] getInvalidTokens() {
+        return new Object[][] {
+                { UiConfig.INVALID_AUTH_TOKEN, "invalid signature" },
+                { "", "empty token" }
+        };
+    }
+
+    @Test(description = "Negative Test: Access denied with various invalid tokens", dataProvider = "invalidTokens", priority = 2)
+    public void accessDeniedWithVariousInvalidTokens(String tokenValue, String description) {
+        goToPageWithToken("http://localhost:8585/#/home", tokenValue);
+
+        DashboardPage dashboardPage = new DashboardPage(driver);
+        Assert.assertFalse(dashboardPage.isOpened(), "Dashboard page should NOT be opened with invalid token: " + description);
+        Assert.assertTrue(driver.getCurrentUrl().contains("/#/login"), "Should be redirected to login page for: " + description);
+    }
+}

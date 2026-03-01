@@ -18,7 +18,4 @@ public class LoginResponseDto {
 
     @JsonProperty("User")
     private UserDto user;
-
-    @JsonProperty("token") // Если токен есть в ответе
-    private String token;
 }
