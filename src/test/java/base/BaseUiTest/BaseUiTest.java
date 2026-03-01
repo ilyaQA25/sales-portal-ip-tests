@@ -16,33 +16,12 @@ public class BaseUiTest {
         driver.get(UiConfig.BASE_URL);
     }
 
-    protected void openPageWithAuth(String url) {
-            driver.get("http://localhost:8585/");
-            driver.manage().deleteAllCookies();
-
-            String cleanToken = TokenGenerator.getAccessToken();
-
-
-            Cookie authCookie = new Cookie(
-                    "Authorization",
-                    cleanToken,
-                    "localhost",
-                    "/",
-                    null,
-                    false,
-                    false
-            );
-            driver.manage().addCookie(authCookie);
-            driver.get(url);
-            driver.navigate().refresh();
-    }
-
-    protected void goToPageWithToken(String url, String tokenValue) {
+    protected void openPageWithAuth(String url, String token) {
         driver.get("http://localhost:8585/");
         driver.manage().deleteAllCookies();
         Cookie authCookie = new Cookie(
                 "Authorization",
-                tokenValue,
+                token,
                 "localhost",
                 "/",
                 null,
@@ -52,6 +31,11 @@ public class BaseUiTest {
         driver.manage().addCookie(authCookie);
         driver.get(url);
         driver.navigate().refresh();
+    }
+
+    protected void openPageWithAuth(String url) {
+        String validToken = TokenGenerator.getAccessToken();
+        openPageWithAuth(url, validToken);
     }
 
     @AfterMethod

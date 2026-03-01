@@ -16,7 +16,7 @@ public class DashboardPage extends BasePage {
     private final By viewCustomersButton = By.id("customers-from-home");
     private final By homeHeader = By.xpath("//h1[text()='Welcome to Sales Management Portal']");
 
-    public boolean isOpened(){
+    public boolean isDashboardPageDisplayed(){
         try {
             return waitForVisibility(viewCustomersButton).isDisplayed();
         } catch (Exception e) {
@@ -27,9 +27,7 @@ public class DashboardPage extends BasePage {
         return driver.getCurrentUrl().endsWith("/#/home");
     }
 
-    public String getPageTitleText() {
+    public String getHomeHeader() {
         return getText(homeHeader);
     }
-
-    
 }
