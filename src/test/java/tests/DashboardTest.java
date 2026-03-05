@@ -8,6 +8,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import pages.DashboardPage;
 import pages.LoginPage;
+import utils.LoginDataProvider;
 import utils.UiConfig;
 
 public class DashboardTest extends BaseUiTest {
@@ -21,21 +22,15 @@ public class DashboardTest extends BaseUiTest {
     @Test(description = "smoke test", priority = 1)
     public void openDashboardDirectly() {
         openPageWithAuth(UiConfig.HOME_URL);
-        Assert.assertEquals(dashboardPage.getHomeHeader(),UiConfig.EXPECTED_DASHBOARD_TITLE);
+        Assert.assertEquals(dashboardPage.getHomeHeader(), UiConfig.EXPECTED_DASHBOARD_TITLE);
     }
 
-    @DataProvider(name = "invalidTokens")
-    public Object[][] getInvalidTokens() {
-        return new Object[][] {
-                { UiConfig.INVALID_AUTH_TOKEN, "invalid signature" },
-                { "", "empty token" }
-        };
-    }
-
-    @Test(description = "Negative Test: Access denied with various invalid tokens", dataProvider = "invalidTokens", priority = 2)
+    @Test(description = "Negative Test: Access denied with various invalid tokens",
+            dataProvider = "invalidTokens",
+            dataProviderClass = LoginDataProvider.class,
+            priority = 2)
     public void accessDeniedWithVariousInvalidTokens(String tokenValue, String description) {
         openPageWithAuth(UiConfig.HOME_URL, tokenValue);
-
         DashboardPage dashboardPage = new DashboardPage(driver);
         Assert.assertFalse(dashboardPage.isDashboardPageDisplayed(), "Dashboard page should NOT be opened with invalid token: " + description);
         Assert.assertTrue(driver.getCurrentUrl().contains("/#/login"), "Should be redirected to login page for: " + description);
