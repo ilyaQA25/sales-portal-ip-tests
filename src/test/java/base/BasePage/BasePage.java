@@ -38,4 +38,8 @@ public class BasePage {
         Select select = new Select(selectElement);
         select.selectByVisibleText(visibleText);
     }
+
+    public boolean isButtonEnabled(By locator) {
+        return driver.findElement(locator).isEnabled();
+    }
 }
