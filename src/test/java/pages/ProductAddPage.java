@@ -13,7 +13,6 @@ public class ProductAddPage extends BasePage {
     private final By productCompany = (By.xpath("//select[@id='inputManufacturer']"));
     private final By errorMess = By.id("error-inputAmount");
 
-
     public ProductAddPage(WebDriver driver) {
         super(driver);
     }
