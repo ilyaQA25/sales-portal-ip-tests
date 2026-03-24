@@ -1,6 +1,7 @@
 package pages;
 
 import base.BasePage.BasePage;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -20,10 +21,11 @@ public class ProductDashboardPage extends BasePage {
         }
     }
 
+    @Step("check is product missing")
     public boolean isProductMissing(String productName) {
         return driver.findElements(getProductByNameLocator(productName)).isEmpty();
     }
-
+    @Step("find product by product name")
     private By getProductByNameLocator(String productName) {
         return By.xpath(String.format(PRODUCT_ROW_XPATH_PATTERN, productName));
     }
